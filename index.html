@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acesso Exclusivo</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-pink: #ff2a85;
+      --secondary-pink: #ff65a5;
+      --deep-pink: #d81165;
+      --light-pink: #fff0f5;
+      --white: #ffffff;
+      --text-dark: #1f1f2e;
+      --text-muted: #6b6b80;
+      --glow-color: rgba(255, 42, 133, 0.45);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 50% 10%, #ffe3ec 0%, #fff0f6 45%, #ffffff 100%);
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Elementos de fundo decorativos */
+    .bg-blobs {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.6;
+    }
+
+    .blob-1 {
+      width: 320px;
+      height: 320px;
+      background: #ffb3d1;
+      top: -100px;
+      right: -80px;
+    }
+
+    .blob-2 {
+      width: 280px;
+      height: 280px;
+      background: #ffd6e6;
+      bottom: -60px;
+      left: -60px;
+    }
+
+    /* Container Principal */
+    .card-container {
+      position: relative;
+      z-index: 1;
+      max-width: 440px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 20px 45px rgba(255, 42, 133, 0.12),
+                  0 4px 12px rgba(0, 0, 0, 0.04);
+      padding: 40px 28px;
+      text-align: center;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Badge de status Online */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 42, 133, 0.08);
+      border: 1px solid rgba(255, 42, 133, 0.2);
+      color: var(--deep-pink);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+      letter-spacing: 0.3px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+      animation: livePulse 2s infinite;
+    }
+
+    @keyframes livePulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+      }
+      70% {
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+
+    /* Avatar ou Ícone de Destaque */
+    .avatar-wrapper {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 20px;
+    }
+
+    .avatar-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px var(--glow-color);
+      border: 4px solid var(--white);
+      background: #ffe3ec;
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+      display: block;
+    }
+
+    .lock-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 32px;
+      height: 32px;
+      background: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Título / Frase Principal */
+    .headline {
+      font-size: 1.65rem;
+      font-weight: 800;
+      line-height: 1.3;
+      color: #231d25;
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+    }
+
+    .headline span.highlight {
+      background: linear-gradient(135deg, var(--deep-pink), var(--primary-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Descrição de apoio */
+    .subtitle {
+      font-size: 0.98rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 30px;
+      padding: 0 10px;
+    }
+
+    /* Botão CTA com Efeito Pulsante */
+    .cta-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: linear-gradient(135deg, #ff3388 0%, #ff1a75 50%, #e6005c 100%);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 20px 24px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(255, 26, 117, 0.45);
+      animation: pulseAnimation 2s infinite ease-in-out;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transform: rotate(30deg);
+      animation: shine 3.5s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(30deg); }
+      30%, 100% { transform: translateX(100%) rotate(30deg); }
+    }
+
+    .cta-button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 30px rgba(255, 26, 117, 0.6);
+    }
+
+    .cta-button:active {
+      transform: scale(0.98);
+    }
+
+    /* Animação de pulso contínuo */
+    @keyframes pulseAnimation {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 26, 117, 0.7), 0 8px 25px rgba(255, 26, 117, 0.4);
+      }
+      50% {
+        transform: scale(1.035);
+        box-shadow: 0 0 0 16px rgba(255, 26, 117, 0), 0 10px 30px rgba(255, 26, 117, 0.55);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 26, 117, 0), 0 8px 25px rgba(255, 26, 117, 0.4);
+      }
+    }
+
+    /* Detalhes de segurança e garantia no rodapé do card */
+    .footer-guarantees {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 24px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #9292a4;
+    }
+
+    .guarantee-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .guarantee-item svg {
+      width: 14px;
+      height: 14px;
+      fill: #10b981;
+    }
+
+    /* Rodapé da página */
+    .page-footer {
+      margin-top: 24px;
+      font-size: 0.75rem;
+      color: #a0a0b2;
+      text-align: center;
+      z-index: 1;
+    }
+
+    @media (max-width: 480px) {
+      .card-container {
+        padding: 32px 20px;
+        border-radius: 26px;
+      }
+
+      .headline {
+        font-size: 1.45rem;
+      }
+
+      .cta-button {
+        font-size: 1.05rem;
+        padding: 18px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fundos com degradê suave -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <main class="card-container">
+    <!-- Indicador de Status Online -->
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      Online Agora
+    </div>
+
+    <!-- Avatar / Foto Exclusiva -->
+    <div class="avatar-wrapper">
+      <div class="avatar-circle">
+        <img src="perfil.jpg" alt="Foto de Perfil" class="avatar-img">
+      </div>
+      <div class="lock-badge">
+        🔒
+      </div>
+    </div>
+
+    <!-- Título solicitado -->
+    <h1 class="headline">
+      Estou te esperando no <span class="highlight">meu privado</span> 😏
+    </h1>
+
+    <!-- Subtexto persuasivo -->
+    <p class="subtitle">
+      Acesso liberado e 100% discreto. Clique no botão abaixo para entrar e falar comigo agora mesmo.
+    </p>
+
+    <!-- Botão CTA pulsante com a URL e classes apropriadas -->
+    <a href="https://serverflow.dad/l/b2dc4213" class="cta button cta-button">
+      ENTRAR AGORA
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14"></path>
+        <path d="M12 5l7 7-7 7"></path>
+      </svg>
+    </a>
+
+    <!-- Selos de Confiança -->
+    <div class="footer-guarantees">
+      <div class="guarantee-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        <span>100% Sigiloso</span>
+      </div>
+      <div class="guarantee-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        <span>Acesso Imediato</span>
+      </div>
+      <div class="guarantee-item">
+        <span>🔞 +18</span>
+      </div>
+    </div>
+  </main>
+
+  <footer class="page-footer">
+    <p>Ambiente seguro e criptografado &copy; Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Script de Trackeamento e Preservação de Parâmetros UTMs -->
+  <script>
+  (function() {
+    var u = new URLSearchParams(window.location.search);
+    var KEYS = [
+      'utm_source','utm_medium','utm_campaign','utm_content','utm_term','utm_id',
+      'fbclid','ttclid','gclid','_fbp',
+      'tsclid',
+      'click_id','kwai_click_id','kwclid','callback',
+      'src','sck','xcod','cv','shk','ph','_bp','_sp',
+      'salesCode','codigo_de_vendas'
+    ];
+    var captured = {};
+    KEYS.forEach(function(k){ var v = u.get(k); if (v) captured[k] = v; });
+    try {
+      var saved = JSON.parse(sessionStorage.getItem('shark_utms') || '{}');
+      Object.keys(captured).forEach(function(k){ saved[k] = captured[k]; });
+      sessionStorage.setItem('shark_utms', JSON.stringify(saved));
+      captured = saved;
+    } catch(e) {}
+    function buildLink(originalHref) {
+      var url = new URL(originalHref, location.origin);
+      Object.keys(captured).forEach(function(k){
+        if (!url.searchParams.has(k)) url.searchParams.set(k, captured[k]);
+      });
+      return url.toString();
+    }
+    // Reescreve no load, nao no clique. Botao do meio dispara auxclick e "abrir em
+    // nova aba" pelo menu de contexto nem chega a disparar evento: com a reescrita
+    // presa ao clique, essas aberturas levavam a URL sem parametro nenhum.
+    function attach() {
+      document.querySelectorAll('a.button, a.cta, a[href*="/l/"], a[href*="/c/"], a[href*="/b/"]').forEach(function(btn){
+        try { btn.href = buildLink(btn.href); } catch(err) {}
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', attach);
+    } else {
+      attach();
+    }
+    // Botao inserido depois do load tambem precisa nascer decorado.
+    try {
+      new MutationObserver(attach).observe(document.documentElement, { childList: true, subtree: true });
+    } catch(e) {}
+  })();
+  </script>
+</body>
+</html>
